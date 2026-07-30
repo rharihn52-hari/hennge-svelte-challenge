@@ -1,6 +1,8 @@
 
 <script lang="ts">
-	let { createSuccessful } = $props();
+	import { createEventDispatcher } from 'svelte';
+
+	const dispatch = createEventDispatcher<{ success: void }>();
 
 	let username = $state('');
 	let password = $state('');
@@ -14,13 +16,13 @@
 	let passwordMissingLowercase = $derived(!/[a-z]/.test(password));
 	const CHALLENGE_SIGNUP_ENDPOINT =
 'https://api.challenge.hennge.com/password-validation-challenge-api/001/challenge-signup';
-	function extractTokenFromChallengeDetailsPath(pathname: string): string {
-		const match = pathname.match(/\/challenge-details\/([^/]+)/);
-		return match?.[1] ?? '';
-	}
+	const getToken = () => {
+		const match = window.location.pathname.match(/\/challenge-details\/(.+)/);
+		return match ? match[1] : '';
+	};
 
-	function getAuthorizationHeaderFromPathname(pathname: string): Record<string, string> {
-		const token = extractTokenFromChallengeDetailsPath(pathname);
+	function getAuthorizationHeader(): Record<string, string> {
+		const token = getToken();
 		if (!token) {
 			return {};
 		}
@@ -51,7 +53,7 @@
 		apiError = '';
 
 		try {
-			const authorizationHeader = getAuthorizationHeaderFromPathname(window.location.pathname);
+			const authorizationHeader = getAuthorizationHeader();
 			const response = await fetch(CHALLENGE_SIGNUP_ENDPOINT, {
 				method: 'POST',
 				headers: {
@@ -66,7 +68,7 @@
 
 			if (response.ok) {
 				apiError = '';
-				createSuccessful();
+				dispatch('success');
 				return;
 			}
 

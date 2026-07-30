@@ -5,7 +5,7 @@
 </script>
 
 {#if !userWasCreated}
-	<CreateUserForm createSuccessful={() => (userWasCreated = true)} />
+	<CreateUserForm on:success={() => (userWasCreated = true)} />
 {:else}
 	<p>User was successfully created!</p>
 {/if}
