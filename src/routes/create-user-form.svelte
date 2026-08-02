@@ -188,13 +188,5 @@
 		cursor: pointer;
 	}
 
-	.password-errors {
-		margin: 0;
-		padding-left: 20px;
-	}
 
-	.password-errors li {
-		margin: 0;
-		font-size: 14px;
-	}
 </style>
